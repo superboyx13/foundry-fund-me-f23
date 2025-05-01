@@ -1,127 +1,211 @@
-Getting Started
-Requirements
-git
-You'll know you did it right if you can run git --version and you see a response like git version x.x.x
-foundry
-You'll know you did it right if you can run forge --version and you see a response like forge 0.2.0 (816e00b 2023-03-16T00:05:26.396218Z)
-Quickstart
-git clone https://github.com/Cyfrin/foundry-fund-me-cu
-cd foundry-fund-me-cu
+# 🚀 Foundry Fund Me (CU Fork)
+
+A smart contract project using Foundry, designed for decentralized funding and testing on zkSync and Sepolia.
+
+---
+
+## 🛠 Getting Started
+
+### 🔧 Requirements
+
+- **Git**
+  ```bash
+  git --version
+  # Expected: git version x.x.x
+  ```
+
+- **Foundry**
+  ```bash
+  forge --version
+  # Expected: forge 0.2.0 (816e00b 2023-03-16T00:05:26.396218Z)
+  ```
+
+---
+
+## ⚡ Quickstart
+
+```bash
+git clone https://github.com/superboyx13/foundry-fund-me-f23/tree/master
+cd foundry-fund-me-f23
 make
-Optional Gitpod
-If you can't or don't want to run and install locally, you can work with this repo in Gitpod. If you do this, you can skip the clone this repo part.
+```
 
-Open in Gitpod
+### 💻 Optional: Use Gitpod
 
-Usage
-Deploy
+Don't want to install locally? Use [Gitpod](https://gitpod.io/) to launch in a dev environment instantly.
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Cyfrin/foundry-fund-me-cu)
+
+---
+
+## 📦 Usage
+
+### 🔁 Deploy
+
+```bash
 forge script script/DeployFundMe.s.sol
-Testing
-We talk about 4 test tiers in the video.
+```
 
-Unit
-Integration
-Forked
-Staging
-This repo we cover #1 and #3.
+---
 
+## ✅ Testing
+
+We cover 4 test tiers:
+
+1. **Unit**
+2. **Integration**
+3. **Forked** ✅
+4. **Staging** ✅
+
+Run tests:
+```bash
 forge test
-or
+```
 
-// Only run test functions matching the specified regex pattern.
-
-"forge test -m testFunctionName" is deprecated. Please use 
-
+Run specific test:
+```bash
 forge test --match-test testFunctionName
-or
+```
 
-forge test --fork-url $SEPOLIA_RPC_URL
-Test Coverage
+Test coverage:
+```bash
 forge coverage
-Local zkSync
-The instructions here will allow you to work with this repo on zkSync.
+```
 
-(Additional) Requirements
-In addition to the requirements above, you'll need:
+---
 
-foundry-zksync
-You'll know you did it right if you can run forge --version and you see a response like forge 0.0.2 (816e00b 2023-03-16T00:05:26.396218Z).
-npx & npm
-You'll know you did it right if you can run npm --version and you see a response like 7.24.0 and npx --version and you see a response like 8.1.0.
-docker
-You'll know you did it right if you can run docker --version and you see a response like Docker version 20.10.7, build f0df350.
-Then, you'll want the daemon running, you'll know it's running if you can run docker --info and in the output you'll see something like the following to know it's running:
-Client:
- Context:    default
- Debug Mode: false
-Setup local zkSync node
-Run the following:
+## 🌐 Local zkSync Setup
 
+### 🧩 Additional Requirements
+
+- **foundry-zksync**
+  ```bash
+  forge --version
+  # Expected: forge 0.0.2 (zkSync)
+  ```
+
+- **Node + npm + npx**
+  ```bash
+  npm --version   # e.g., 7.24.0
+  npx --version   # e.g., 8.1.0
+  ```
+
+- **Docker**
+  ```bash
+  docker --version   # e.g., Docker version 20.10.7
+  docker --info      # Should show `Context: default`
+  ```
+
+---
+
+### 🧪 Start zkSync Local Node
+
+```bash
 npx zksync-cli dev config
-And select: In memory node and do not select any additional modules.
-
-Then run:
+# Choose: In memory node, no additional modules
 
 npx zksync-cli dev start
-And you'll get an output like:
+```
 
-In memory node started v0.1.0-alpha.22:
- - zkSync Node (L2):
-  - Chain ID: 260
-  - RPC URL: http://127.0.0.1:8011
-  - Rich accounts: https://era.zksync.io/docs/tools/testing/era-test-node.html#use-pre-configured-rich-wallets
-Deploy to local zkSync node
+Expected output:
+```
+In memory node started v0.1.0-alpha.22
+Chain ID: 260
+RPC URL: http://127.0.0.1:8011
+```
+
+Reference: [zkSync Rich Accounts](https://era.zksync.io/docs/tools/testing/era-test-node.html#use-pre-configured-rich-wallets)
+
+---
+
+### 🚀 Deploy to zkSync Local Node
+
+```bash
 make deploy-zk
-This will deploy a mock price feed and a fund me contract to the zkSync node.
+```
 
-Deployment to a testnet or mainnet
-Setup environment variables
-You'll want to set your SEPOLIA_RPC_URL and PRIVATE_KEY as environment variables. You can add them to a .env file, similar to what you see in .env.example.
+---
 
-PRIVATE_KEY: The private key of your account (like from metamask). NOTE: FOR DEVELOPMENT, PLEASE USE A KEY THAT DOESN'T HAVE ANY REAL FUNDS ASSOCIATED WITH IT.
-You can learn how to export it here.
-SEPOLIA_RPC_URL: This is url of the sepolia testnet node you're working with. You can get setup with one for free from Alchemy
-Optionally, add your ETHERSCAN_API_KEY if you want to verify your contract on Etherscan.
+## 🔐 Deployment to Sepolia Testnet
 
-Get testnet ETH
-Head over to faucets.chain.link and get some testnet ETH. You should see the ETH show up in your metamask.
+### 🧾 Environment Variables
 
-Deploy
-forge script script/DeployFundMe.s.sol --rpc-url $SEPOLIA_RPC_URL --private-key $PRIVATE_KEY --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY
-Scripts
-After deploying to a testnet or local net, you can run the scripts.
+Create a `.env` file (see `.env.example`) and define:
 
-Using cast deployed locally example:
+```dotenv
+PRIVATE_KEY=your_private_key   # Don't use a key with real funds
+SEPOLIA_RPC_URL=https://your-sepolia-node-url
+ETHERSCAN_API_KEY=your_key     # Optional
+```
 
-cast send <FUNDME_CONTRACT_ADDRESS> "fund()" --value 0.1ether --private-key <PRIVATE_KEY>
-or
+Get testnet ETH: [Chainlink Faucets](https://faucets.chain.link)
 
-forge script script/Interactions.s.sol:FundFundMe --rpc-url sepolia  --private-key $PRIVATE_KEY  --broadcast
-forge script script/Interactions.s.sol:WithdrawFundMe --rpc-url sepolia  --private-key $PRIVATE_KEY  --broadcast
-Withdraw
-cast send <FUNDME_CONTRACT_ADDRESS> "withdraw()"  --private-key <PRIVATE_KEY>
-Estimate gas
-You can estimate how much gas things cost by running:
+### 🛰 Deploy to Sepolia
 
+```bash
+forge script script/DeployFundMe.s.sol \
+  --rpc-url $SEPOLIA_RPC_URL \
+  --private-key $PRIVATE_KEY \
+  --broadcast \
+  --verify \
+  --etherscan-api-key $ETHERSCAN_API_KEY
+```
+
+---
+
+## 📜 Scripts
+
+Interact after deploying:
+
+### Fund
+
+```bash
+cast send <FUNDME_CONTRACT_ADDRESS> "fund()" \
+  --value 0.1ether \
+  --private-key <PRIVATE_KEY>
+```
+
+OR
+
+```bash
+forge script script/Interactions.s.sol:FundFundMe \
+  --rpc-url sepolia \
+  --private-key $PRIVATE_KEY \
+  --broadcast
+```
+
+### Withdraw
+
+```bash
+forge script script/Interactions.s.sol:WithdrawFundMe \
+  --rpc-url sepolia \
+  --private-key $PRIVATE_KEY \
+  --broadcast
+```
+
+OR
+
+```bash
+cast send <FUNDME_CONTRACT_ADDRESS> "withdraw()" \
+  --private-key <PRIVATE_KEY>
+```
+
+---
+
+## ⛽ Estimate Gas
+
+```bash
 forge snapshot
-And you'll see an output file called .gas-snapshot
+```
 
-Formatting
-To run code formatting:
+Output: `.gas-snapshot` file with cost estimates.
 
+---
+
+## 🎨 Formatting
+
+```bash
 forge fmt
-Additional Info:
-Some users were having a confusion that whether Chainlink-brownie-contracts is an official Chainlink repository or not. Here is the info. Chainlink-brownie-contracts is an official repo. The repository is owned and maintained by the chainlink team for this very purpose, and gets releases from the proper chainlink release process. You can see it's still the smartcontractkit org as well.
+```
 
-https://github.com/smartcontractkit/chainlink-brownie-contracts
-
-Let's talk about what "Official" means
-The "official" release process is that chainlink deploys it's packages to npm. So technically, even downloading directly from smartcontractkit/chainlink is wrong, because it could be using unreleased code.
-
-So, then you have two options:
-
-Download from NPM and have your codebase have dependencies foreign to foundry
-Download from the chainlink-brownie-contracts repo which already downloads from npm and then packages it nicely for you to use in foundry.
-Summary
-That is an official repo maintained by the same org
-It downloads from the official release cycle chainlink/contracts use (npm) and packages it nicely for digestion from foundry.
+---
