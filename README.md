@@ -1,66 +1,127 @@
-## Foundry
+Getting Started
+Requirements
+git
+You'll know you did it right if you can run git --version and you see a response like git version x.x.x
+foundry
+You'll know you did it right if you can run forge --version and you see a response like forge 0.2.0 (816e00b 2023-03-16T00:05:26.396218Z)
+Quickstart
+git clone https://github.com/Cyfrin/foundry-fund-me-cu
+cd foundry-fund-me-cu
+make
+Optional Gitpod
+If you can't or don't want to run and install locally, you can work with this repo in Gitpod. If you do this, you can skip the clone this repo part.
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+Open in Gitpod
 
-Foundry consists of:
+Usage
+Deploy
+forge script script/DeployFundMe.s.sol
+Testing
+We talk about 4 test tiers in the video.
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+Unit
+Integration
+Forked
+Staging
+This repo we cover #1 and #3.
 
-## Documentation
+forge test
+or
 
-https://book.getfoundry.sh/
+// Only run test functions matching the specified regex pattern.
 
-## Usage
+"forge test -m testFunctionName" is deprecated. Please use 
 
-### Build
+forge test --match-test testFunctionName
+or
 
-```shell
-$ forge build
-```
+forge test --fork-url $SEPOLIA_RPC_URL
+Test Coverage
+forge coverage
+Local zkSync
+The instructions here will allow you to work with this repo on zkSync.
 
-### Test
+(Additional) Requirements
+In addition to the requirements above, you'll need:
 
-```shell
-$ forge test
-```
+foundry-zksync
+You'll know you did it right if you can run forge --version and you see a response like forge 0.0.2 (816e00b 2023-03-16T00:05:26.396218Z).
+npx & npm
+You'll know you did it right if you can run npm --version and you see a response like 7.24.0 and npx --version and you see a response like 8.1.0.
+docker
+You'll know you did it right if you can run docker --version and you see a response like Docker version 20.10.7, build f0df350.
+Then, you'll want the daemon running, you'll know it's running if you can run docker --info and in the output you'll see something like the following to know it's running:
+Client:
+ Context:    default
+ Debug Mode: false
+Setup local zkSync node
+Run the following:
 
-### Format
+npx zksync-cli dev config
+And select: In memory node and do not select any additional modules.
 
-```shell
-$ forge fmt
-```
+Then run:
 
-### Gas Snapshots
+npx zksync-cli dev start
+And you'll get an output like:
 
-```shell
-$ forge snapshot
-```
+In memory node started v0.1.0-alpha.22:
+ - zkSync Node (L2):
+  - Chain ID: 260
+  - RPC URL: http://127.0.0.1:8011
+  - Rich accounts: https://era.zksync.io/docs/tools/testing/era-test-node.html#use-pre-configured-rich-wallets
+Deploy to local zkSync node
+make deploy-zk
+This will deploy a mock price feed and a fund me contract to the zkSync node.
 
-### Anvil
+Deployment to a testnet or mainnet
+Setup environment variables
+You'll want to set your SEPOLIA_RPC_URL and PRIVATE_KEY as environment variables. You can add them to a .env file, similar to what you see in .env.example.
 
-```shell
-$ anvil
-```
+PRIVATE_KEY: The private key of your account (like from metamask). NOTE: FOR DEVELOPMENT, PLEASE USE A KEY THAT DOESN'T HAVE ANY REAL FUNDS ASSOCIATED WITH IT.
+You can learn how to export it here.
+SEPOLIA_RPC_URL: This is url of the sepolia testnet node you're working with. You can get setup with one for free from Alchemy
+Optionally, add your ETHERSCAN_API_KEY if you want to verify your contract on Etherscan.
 
-### Deploy
+Get testnet ETH
+Head over to faucets.chain.link and get some testnet ETH. You should see the ETH show up in your metamask.
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
+Deploy
+forge script script/DeployFundMe.s.sol --rpc-url $SEPOLIA_RPC_URL --private-key $PRIVATE_KEY --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY
+Scripts
+After deploying to a testnet or local net, you can run the scripts.
 
-### Cast
+Using cast deployed locally example:
 
-```shell
-$ cast <subcommand>
-```
+cast send <FUNDME_CONTRACT_ADDRESS> "fund()" --value 0.1ether --private-key <PRIVATE_KEY>
+or
 
-### Help
+forge script script/Interactions.s.sol:FundFundMe --rpc-url sepolia  --private-key $PRIVATE_KEY  --broadcast
+forge script script/Interactions.s.sol:WithdrawFundMe --rpc-url sepolia  --private-key $PRIVATE_KEY  --broadcast
+Withdraw
+cast send <FUNDME_CONTRACT_ADDRESS> "withdraw()"  --private-key <PRIVATE_KEY>
+Estimate gas
+You can estimate how much gas things cost by running:
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+forge snapshot
+And you'll see an output file called .gas-snapshot
+
+Formatting
+To run code formatting:
+
+forge fmt
+Additional Info:
+Some users were having a confusion that whether Chainlink-brownie-contracts is an official Chainlink repository or not. Here is the info. Chainlink-brownie-contracts is an official repo. The repository is owned and maintained by the chainlink team for this very purpose, and gets releases from the proper chainlink release process. You can see it's still the smartcontractkit org as well.
+
+https://github.com/smartcontractkit/chainlink-brownie-contracts
+
+Let's talk about what "Official" means
+The "official" release process is that chainlink deploys it's packages to npm. So technically, even downloading directly from smartcontractkit/chainlink is wrong, because it could be using unreleased code.
+
+So, then you have two options:
+
+Download from NPM and have your codebase have dependencies foreign to foundry
+Download from the chainlink-brownie-contracts repo which already downloads from npm and then packages it nicely for you to use in foundry.
+Summary
+That is an official repo maintained by the same org
+It downloads from the official release cycle chainlink/contracts use (npm) and packages it nicely for digestion from foundry.

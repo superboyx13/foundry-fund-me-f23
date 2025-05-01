@@ -14,3 +14,9 @@ docs/
 .env
 
 lib/
+
+.DS_Store
+zkout/
+
+broadcast/
+lib/
