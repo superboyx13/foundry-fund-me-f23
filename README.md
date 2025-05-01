@@ -1,4 +1,4 @@
-# 🚀 Foundry Fund Me (CU Fork)
+# 🚀 Foundry Fund Me
 
 A smart contract project using Foundry, designed for decentralized funding and testing on zkSync and Sepolia.
 
